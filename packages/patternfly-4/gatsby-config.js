@@ -49,13 +49,6 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `ts-docs`,
-        path: `${__dirname}/ts-docs/`
-      }
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
         name: `core`,
         path: `${__dirname}/_repos/core`,
         ignore: [`**/*.scss`]
@@ -85,8 +78,15 @@ module.exports = {
     'gatsby-plugin-catch-links', // catch links in markdown files and use gatsby-link to navigate
     'gatsby-plugin-emotion',
     'gatsby-plugin-offline', // this plugin enables Progressive Web App + Offline functionality https://gatsby.app/offline
-    'gatsby-plugin-typescript',
-    'gatsby-transformer-react-docgen',
+    {
+      // Our custom plugin for *.js?x *.ts?x files to get prop types
+      resolve: require.resolve(`${__dirname}/plugins/gatsby-transformer-react-docgen-typescript`),
+    },
+    {
+      // Our custom plugin for examples/*.(js|svg) files to add to .cache/example_index.js
+      // ...then webpack deals with those files statically instead of us dynamically :)
+      resolve: require.resolve(`${__dirname}/plugins/gatsby-transformer-react-examples`),
+    },
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
