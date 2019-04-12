@@ -1,16 +1,11 @@
 import React from 'react';
 import { graphql, StaticQuery, Link } from 'gatsby';
-import * as DocsFiles from '../../../../.tmp';
 import {
   Nav,
   NavList,
   NavExpandable,
   NavItem,
-  Form,
-  TextInput
 } from '@patternfly/react-core';
-import { css } from '@patternfly/react-styles';
-import styles from '../../navigation/navigation.styles';
 import Switcher from '../../switcher';
 import { Location } from '@reach/router';
 
@@ -30,20 +25,12 @@ class SideNav extends React.Component {
     const { data } = this.props;
     const { searchValue } = this.state;
 
-    const componentMapper = (path, label) => {
-      const { components } = DocsFiles[`${label.toLowerCase().replace(/\s+/g,'')}_docs`];
-      return Object.keys(components).map(k => ({
-        label: k,
-        to: `${path}#${k}`
-      }));
-    };
-    const getPackage = label => DocsFiles[`${label.toLowerCase().replace(/\s+/g,'')}_package`].substr(6);
     const componentRoutes = data.componentPages
       ? data.componentPages.edges.map(e => ({
         to: e.node.path,
         label: e.node.fields.label,
-        pkg: getPackage(e.node.fields.label),
-        components: componentMapper(e.node.path, e.node.fields.label)
+        pkg: 'core',
+        components: []
       }))
       : [];
 
@@ -51,8 +38,8 @@ class SideNav extends React.Component {
       ? data.layoutPages.edges.map(e => ({
         to: e.node.path,
         label: e.node.fields.label,
-        pkg: getPackage(e.node.fields.label),
-        components: componentMapper(e.node.path, e.node.fields.label)
+        pkg: 'core',
+        components: []
       }))
       : [];
 
