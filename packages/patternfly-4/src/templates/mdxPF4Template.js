@@ -3,10 +3,11 @@ import { graphql } from 'gatsby';
 import Layout from '../components/layout';
 import { Title, PageSection } from '@patternfly/react-core';
 import { MDXProvider } from '@mdx-js/react';
-import { MDXRenderer } from 'gatsby-mdx';
+import { MDXRenderer } from '../components/mdxRenderer';
+import LiveEdit from '../components/_react/liveEdit';
 
 const components = {
-  // code: LiveEdit,
+  code: LiveEdit,
   pre: React.Fragment
 };
 
@@ -28,6 +29,8 @@ const MdxPF4Template = ({ data }) => {
   let section = data.mdx.frontmatter.section;
   if (!section)
     section = 'component';
+  
+  console.log('code', data.mdx.code.body);
 
   return (
     <Layout>
@@ -35,11 +38,11 @@ const MdxPF4Template = ({ data }) => {
         <Title size="4xl" style={{ textTransform: 'capitalize' }}>
           {data.mdx.frontmatter.title} {section.indexOf('-') === -1 ? section : ''}
         </Title>
-        {/* <MDXProvider components={components}>
+        <MDXProvider components={components}>
           <MDXRenderer>
             {data.mdx.code.body}
           </MDXRenderer>
-        </MDXProvider> */}
+        </MDXProvider>
       </PageSection>
 
       {props.length > 0 && props.map(component =>

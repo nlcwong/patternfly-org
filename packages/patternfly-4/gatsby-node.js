@@ -50,7 +50,7 @@ exports.onCreateNode = ({ node, actions }) => {
   }
 };
 
-exports.createPages = ({ graphql, actions }) => {
+exports.createPages = async ({ graphql, actions }) => {
   const redirects = [
     { f: `/get-started`, t: `/get-started/about` },
     { f: `/design-guidelines`, t: `/design-guidelines/styles/icons` },
@@ -64,105 +64,102 @@ exports.createPages = ({ graphql, actions }) => {
     })
     console.log('\nRedirecting: ' + f + ' to: ' + t);
   })
-  return new Promise((resolve, reject) => {
-    graphql(`
-      query AllDocsFiles {
-        pf4Docs: allMdx(filter: {fileAbsolutePath: {glob: "**/patternfly-4/_repos/react*/**"} }) {
-          edges {
-            node {
-              fileAbsolutePath
-              frontmatter {
-                section
-                title
-                fullscreen
-              }
-            }
-          }
-        },
-        coreDocs: allFile(filter: { sourceInstanceName: { eq: "core" }, absolutePath: { glob: "**/examples/index.js" } }) {
-          edges {
-            node {
-              relativePath
-              relativeDirectory
-              absolutePath
-              base
-              name
+  await graphql(`
+    query AllDocsFiles {
+      pf4Docs: allMdx(filter: {fileAbsolutePath: {glob: "**/patternfly-4/_repos/react*/**"} }) {
+        edges {
+          node {
+            fileAbsolutePath
+            frontmatter {
+              section
+              title
+              fullscreen
             }
           }
         }
-        contentPages: allMdx(filter: {fileAbsolutePath: {glob: "**/patternfly-4/content/**"}, frontmatter: {path: {ne: null}}}) {
-          edges {
-            node {
-              fileAbsolutePath
-              frontmatter {
-                path
-              }
+      },
+      coreDocs: allFile(filter: { sourceInstanceName: { eq: "core" }, absolutePath: { glob: "**/examples/index.js" } }) {
+        edges {
+          node {
+            relativePath
+            relativeDirectory
+            absolutePath
+            base
+            name
+          }
+        }
+      }
+      contentPages: allMdx(filter: {fileAbsolutePath: {glob: "**/patternfly-4/content/**"}, frontmatter: {path: {ne: null}}}) {
+        edges {
+          node {
+            fileAbsolutePath
+            frontmatter {
+              path
             }
           }
         }
       }
-    `).then(result => {
-      if (result.errors) {
-        return reject(result.errors);
-      }
-      const { pf4Docs, coreDocs, contentPages} = result.data;
+    }
+  `).then(result => {
+    if (result.errors) {
+      return reject(result.errors);
+    }
+    const { pf4Docs, coreDocs, contentPages} = result.data;
 
-      contentPages.edges.forEach(({ node }) => {
-        console.log(`creating content page (mdx): ${node.frontmatter.path}`);
+    contentPages.edges.forEach(({ node }) => {
+      console.log(`creating content page (mdx): ${node.frontmatter.path}`);
+      actions.createPage({
+        path: node.frontmatter.path,
+        component: path.resolve(`src/templates/contentTemplate.js`),
+        context: {}, // additional data can be passed via context
+      })
+    });
+
+    pf4Docs.edges.forEach(({node}) => {
+      const componentName = navHelpers.getFileName(node.fileAbsolutePath);
+      const parentFolderName = navHelpers.getParentFolder(node.fileAbsolutePath, 3);
+      const folderName = navHelpers.getParentFolder(node.fileAbsolutePath);
+      const section = node.frontmatter.section ? node.frontmatter.section : 'components';
+
+      let link = '/bad-page/';
+      // Create fullscreen example component pages
+      if (node.frontmatter.fullscreen) {
+        link = `/documentation/react/${section}/${parentFolderName}/${componentName}/`.toLowerCase();
+        console.log('creating pf4 fullscreen page (mdx):', link);
         actions.createPage({
-          path: node.frontmatter.path,
-          component: path.resolve(`src/templates/contentTemplate.js`),
-          context: {}, // additional data can be passed via context
-        })
-      });
-
-      pf4Docs.edges.forEach(({node}) => {
-        const componentName = navHelpers.getFileName(node.fileAbsolutePath);
-        const parentFolderName = navHelpers.getParentFolder(node.fileAbsolutePath, 3);
-        const folderName = navHelpers.getParentFolder(node.fileAbsolutePath);
-        const section = node.frontmatter.section ? node.frontmatter.section : 'components';
-  
-        let link = '/bad-page/';
-        // Create fullscreen example component pages
-        if (node.frontmatter.fullscreen) {
-          link = `/documentation/react/${section}/${parentFolderName}/${componentName}/`.toLowerCase();
-          console.log('creating pf4 fullscreen page (mdx):', link);
-          actions.createPage({
-            path: link,
-            component: path.resolve('./src/templates/mdxFullscreenTemplate.js'),
-            context: {
-              title: node.frontmatter.title,
-              fileAbsolutePath: node.fileAbsolutePath, // Helps us get the markdown
-            }
-          });
-        } else {
-          // Normal templated component pages
-          link = `/documentation/react/${section}/${componentName}/`.toLowerCase();
-          console.log('creating pf4 doc page (mdx):', link);
-          actions.createPage({
-            path: link,
-            component: path.resolve('./src/templates/mdxPF4Template.js'),
-            context: {
-              title: node.frontmatter.title,
-              fileAbsolutePath: node.fileAbsolutePath, // Helps us get the markdown
-              pathRegex: `/${folderName}\/.*/` // Helps us get the docgenned props
-            }
-          });
-        }
-      });
-
-      coreDocs && coreDocs.edges.forEach(({ node }) => {
-        const shortenedPath = node.relativePath.split('/').slice(2, 4).join('/').toLowerCase();
-        const examplePath = `/documentation/core/${shortenedPath}`;
-
-        console.log(`creating core doc page (${node.absolutePath}):`, examplePath);
-        actions.createPage({
-          path: examplePath,
-          component: path.resolve(__dirname, node.absolutePath)
+          path: link,
+          component: path.resolve('./src/templates/mdxFullscreenTemplate.js'),
+          context: {
+            title: node.frontmatter.title,
+            fileAbsolutePath: node.fileAbsolutePath, // Helps us get the markdown
+          }
         });
+      } else {
+        // Normal templated component pages
+        link = `/documentation/react/${section}/${componentName}/`.toLowerCase();
+        console.log('creating pf4 doc page (mdx):', link);
+        actions.createPage({
+          path: link,
+          component: path.resolve('./src/templates/mdxPF4Template.js'),
+          context: {
+            title: node.frontmatter.title,
+            fileAbsolutePath: node.fileAbsolutePath, // Helps us get the markdown
+            pathRegex: `/${folderName}\/.*/` // Helps us get the docgenned props
+          }
+        });
+      }
+    });
+
+    coreDocs && coreDocs.edges.forEach(({ node }) => {
+      const shortenedPath = node.relativePath.split('/').slice(2, 4).join('/').toLowerCase();
+      const examplePath = `/documentation/core/${shortenedPath}`;
+
+      console.log(`creating core doc page (${node.absolutePath}):`, examplePath);
+      actions.createPage({
+        path: examplePath,
+        component: path.resolve(__dirname, node.absolutePath)
       });
     });
-    resolve();
   });
 };
 
@@ -186,7 +183,6 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }
 });
 
 const continueWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) => {
-  const pfStylesTest = /patternfly.*(components|layouts|utilities).*\.css$/;
   actions.setWebpackConfig({
     module: {
       rules: [

@@ -63,7 +63,7 @@ export default function ContentTemplate ({
 }) {
   let SideNav;
   const { mdx, allGetStartedNavigationJson, allDesignGuidelinesNavigationJson } = data;
-  const { frontmatter } = markdownRemark;
+  const { frontmatter } = mdx;
 
   if (frontmatter.path.indexOf('/get-started') > -1 ) {
     SideNav = navBuilder(allGetStartedNavigationJson.edges);
