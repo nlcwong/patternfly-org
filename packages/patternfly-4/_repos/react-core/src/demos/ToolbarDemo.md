@@ -3,8 +3,7 @@ title: "Toolbar"
 section: "demos"
 ---
 ## Toolbar Demo
-```js
-import React from 'react';
+
 import {
   Button,
   Dropdown,
@@ -20,6 +19,7 @@ import {
 } from '@patternfly/react-core';
 import { ListUlIcon, SortAlphaDownIcon, TableIcon } from '@patternfly/react-icons';
 
+```js
 class ComplexToolbarDemo extends React.Component {
   constructor(props) {
     super(props);
