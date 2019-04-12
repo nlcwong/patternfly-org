@@ -47,7 +47,7 @@ class CoreSideNav extends React.Component {
       return accum;
     }, {});
 
-    const { components, layouts, demos, utilities, 'upgrade-examples': upgradeExamples} = allPages;
+    const { components, layouts, demos, utilities } = allPages;
 
     const searchRE = new RegExp(searchValue, 'i');
 
@@ -55,7 +55,6 @@ class CoreSideNav extends React.Component {
     const filteredLayouts = layouts.filter(c => searchRE.test(c.text));
     const filteredDemos = demos.filter(c => searchRE.test(c.text));
     const filteredUtilities = utilities.filter(c => searchRE.test(c.text));
-    // const filteredUpgradeExamples = upgradeExamples.filter(c => searchRE.test(c.text));
 
     const SideNav = (
       <Location>

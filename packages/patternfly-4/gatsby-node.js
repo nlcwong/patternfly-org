@@ -11,6 +11,8 @@ const paramCase = require('param-case');
 const inflection = require('inflection');
 const glob = require('glob');
 const findInFiles = require('find-in-files');
+const navHelpers = require("./src/helpers/navHelpers");
+const astHelpers = require("./src/helpers/astHelpers");
 // const styleFinder = require('./scripts/find-react-styles');
 
 // Map to handlebars partial files for Core
@@ -81,20 +83,19 @@ exports.createPages = ({ graphql, actions }) => {
         name
       }
       query AllDocsFiles {
-        docs: allFile(filter: { sourceInstanceName: { eq: "react" }, absolutePath: { glob: "**/*.docs.js" } }) {
+        docs: allMarkdownRemark(filter: {fileAbsolutePath: {glob: "**/patternfly-4/_repos/react*/**"} }) {
           edges {
             node {
-              ...DocFile
+              htmlAst
+              fileAbsolutePath
+              frontmatter {
+                seperatePages
+                section
+                title
+              }
             }
           }
-        }
-        examples: allFile(filter: { sourceInstanceName: { eq: "react" }, absolutePath: { glob: "**/examples/!(*.styles).js" } }) {
-          edges {
-            node {
-              ...DocFile
-            }
-          }
-        }
+        },
         exampleImages: allFile(filter: { sourceInstanceName: { eq: "react" }, extension: { regex: "/(png|svg|jpg)/" } }) {
           edges {
             node {
@@ -124,9 +125,63 @@ exports.createPages = ({ graphql, actions }) => {
       if (result.errors) {
         return reject(result.errors);
       }
-      const { docs, examples, exampleImages, coreExamples, markdownPages} = result.data;
+      const { docs, exampleImages, coreExamples, markdownPages} = result.data;
       const docExports = [];
       const docsComponentPath = path.resolve(__dirname, './src/components/_react/Documentation');
+      const templatePath = path.resolve('./src/templates/markdownTemplate.js');
+
+      docs.edges.forEach(({node: doc}) => {
+        const componentName = navHelpers.getFileName(doc.fileAbsolutePath);
+        const folderName = navHelpers.getParentFolder(doc.fileAbsolutePath);
+
+        let link = '/bad-page/';
+        let context = {};
+        // Create fullscreen example component pages for any links in the *.md
+        if (doc.frontmatter.seperatePages) {
+          // Create the templated page to link to them differently
+          link = `documentation/react/${doc.frontmatter.section}/${componentName}/`;
+          context = {
+            title: doc.frontmatter.title,
+            fileAbsolutePath: doc.fileAbsolutePath,
+            pathRegex: '', // No props
+            examplesRegex: '', // No examples to inject (they're on separate pages)
+          };
+
+          // Create the separate pages
+          astHelpers.getLinks(doc.htmlAst).forEach(mdLink => {
+            const split = mdLink
+              .replace('.', '')
+              .split('/')
+              .filter(s => s);
+          const demoComponent = split[split.length - 1];
+          const basePath = path.dirname(doc.fileAbsolutePath);
+
+          //todo DZ - this breaks ons separate pages - need to figure out why
+          // actions.createPage({
+          //   path: `documentation/react/${link}${split.join('/')}/`,
+          //   // Assume [Link](/PageLayoutSimpleNav/) in *.md means there is a ./examples/PageLayoutSimpleNav.js
+          //   component: path.resolve(`${basePath}/examples/${demoComponent}.js`),
+          // });
+        });
+        } else {
+          // Normal templated component pages
+          let section = doc.frontmatter.section ? doc.frontmatter.section : 'components';
+          link = `documentation/react/${section}/${componentName}/`;
+          context = {
+            title: doc.frontmatter.title,
+            fileAbsolutePath: doc.fileAbsolutePath, // Helps us get the markdown
+            pathRegex: `/${folderName}\/.*/`, // Helps us get the docgenned props
+            examplesRegex: `/${folderName}\/examples\/.*/`, // Helps us inject the example files
+          }
+        }
+        // // console.log('adding page', link);
+        actions.createPage({
+          path: link,
+          component: templatePath,
+          context: context
+        });
+      });
+
       // docs.edges.forEach(({ node: doc }) => {
       //   const filePath = path.resolve(__dirname, '.tmp', doc.base);
       //
@@ -220,7 +275,7 @@ exports.createPages = ({ graphql, actions }) => {
       });
     });
     resolve();
-  })
+  });
 };
 
 exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) =>
