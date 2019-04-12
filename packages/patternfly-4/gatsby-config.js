@@ -1,5 +1,25 @@
 const globImporter = require('node-sass-glob-importer');
 
+const ignore = [
+  `**/dist`,
+  `**/helpers`,
+  `**/scripts`,
+  `**/styles`,
+  `**/build`,
+  `**/utils`,
+  `**/test-helpers`,
+  /.*react-styles.*/,
+  /.*react-docs.*/,
+  /.*react-integration.*/,
+  `**/\..*`, // dotfiles
+  `**/*.d.ts`,
+  `**/*.test.*`,
+  `**/tsconfig.*`,
+  `**/tslint.*`,
+  `**/README.*`,
+  `**/CHANGELOG.*`,
+];
+
 module.exports = {
   pathPrefix: '/4.0',
   siteMetadata: {
@@ -10,48 +30,42 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: `gatsby-plugin-page-creator`,
-      options: {
-        path: `${__dirname}/content`,
-      },
-    },
-    {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `markdown-pages`,
+        name: `content-pages`,
         path: `${__dirname}/content`
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-core`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-charts`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-table`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `core`,
-        path: `${__dirname}/_repos/core`,
-        ignore: [`**/*.scss`]
+        name: `core-pages`,
+        path: `${__dirname}/_repos/core/src`,
+        ignore: [`**/*.scss`, `**/*.md`]
       }
     },
     {
@@ -71,9 +85,9 @@ module.exports = {
     'gatsby-plugin-no-sourcemaps',
     'gatsby-transformer-json',
     'gatsby-plugin-react-helmet',
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
-    'gatsby-remark-images',
+    // 'gatsby-transformer-sharp',
+    // 'gatsby-plugin-sharp',
+    // 'gatsby-remark-images',
     'gatsby-plugin-sitemap',
     'gatsby-plugin-catch-links', // catch links in markdown files and use gatsby-link to navigate
     'gatsby-plugin-emotion',
@@ -81,11 +95,6 @@ module.exports = {
     {
       // Our custom plugin for *.js?x *.ts?x files to get prop types
       resolve: require.resolve(`${__dirname}/plugins/gatsby-transformer-react-docgen-typescript`),
-    },
-    {
-      // Our custom plugin for examples/*.(js|svg) files to add to .cache/example_index.js
-      // ...then webpack deals with those files statically instead of us dynamically :)
-      resolve: require.resolve(`${__dirname}/plugins/gatsby-transformer-react-examples`),
     },
     {
       resolve: 'gatsby-plugin-robots-txt',
@@ -96,40 +105,17 @@ module.exports = {
       }
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-mdx`,
       options: {
-        plugins: [
-          'gatsby-remark-autolink-headers',
-          // {
-          //   resolve: `gatsby-remark-prismjs`,
-          //   options: {
-          //     classPrefix: 'prism-language-'
-          //   }
-          // },
-          {
-            resolve: `gatsby-remark-images`,
-            options: {
-              maxWidth: 700,
-            }
-          }
-        ]
-      }
-    },
-    {
-      resolve: `gatsby-mdx-tmp`,
-      options: {
-        extensions: ['.mdx'],
-        defaultLayouts: {
-          default: require.resolve("./src/templates/mdxPageTemplate.js")
-        },
-        gatsbyRemarkPlugins: [
-          {
-            resolve: `gatsby-remark-images`,
-            options: {
-              maxWidth: 700
-            }
-          }
-        ]
+        extensions: ['.mdx', '.md'],
+        // gatsbyRemarkPlugins: [
+        //   {
+        //     resolve: `gatsby-remark-images`,
+        //     options: {
+        //       maxWidth: 700
+        //     }
+        //   }
+        // ]
       }
     },
     {
