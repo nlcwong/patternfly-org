@@ -14,7 +14,7 @@ import {
 import { PatternFlyThemeProvider } from '@patternfly/react-styled-system';
 import { Location } from '@reach/router';
 import { MDXRenderer } from 'gatsby-mdx';
-import './contentTemplate.scss';
+import './template.scss';
 
 const navBuilder = navData => {
   return (

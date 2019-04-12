@@ -1,17 +1,69 @@
 import React from 'react';
-import { graphql } from 'gatsby';
-import Layout from '../components/layout';
-import { Title, PageSection } from '@patternfly/react-core';
+import { graphql, Link } from 'gatsby';
+import { Location } from '@reach/router';
 import { MDXProvider } from '@mdx-js/react';
+import { Nav, NavList, NavExpandable, NavItem, Title, PageSection } from '@patternfly/react-core';
 import { MDXRenderer } from '../components/mdxRenderer';
 import LiveEdit from '../components/_react/liveEdit';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
+import './template.scss';
 
+const navBuilder = navData => {
+  console.log('nav data', navData);
+  return (
+    <Location>
+      {({ location }) => {
+        // console.log(location);
+        const currentPath = location.pathname;
+        const { allGetStartedNavigationJson, allDesignGuidelinesNavigationJson } = navData;
+        if (currentPath.indexOf('/get-started') > -1 ) {
+          navData = allGetStartedNavigationJson.edges;
+        } else if (currentPath.indexOf('/design-guidelines') > -1 ) {
+          navData = allDesignGuidelinesNavigationJson.edges;
+        }
+        return (
+          <Nav aria-label="Nav">
+            <NavList>
+              {navData.map(({ node }) => node.subNav ? (
+                <NavExpandable key={node.text} title={node.text} isExpanded={currentPath.indexOf(node.path) > -1} isActive={currentPath.indexOf(node.path) > -1}>
+                  {node.subNav.map(item => (
+                    <NavItem
+                      itemId={item.path}
+                      key={item.path}
+                      isActive={currentPath.indexOf(item.path) > -1}
+                    >
+                      <Link to={item.path}>
+                        {item.text}
+                      </Link>
+                    </NavItem>
+                  ))}
+                </NavExpandable>
+              ): (
+                <NavItem
+                  itemId={node.path}
+                  key={node.path}
+                  isActive={currentPath.indexOf(node.path) > -1}
+                >
+                  <Link to={node.path}>
+                    {node.text}
+                  </Link>
+                </NavItem>
+              ))}
+            </NavList>
+          </Nav>
+        );
+      }}
+    </Location>
+  );
+};
 const components = {
   code: LiveEdit,
   pre: React.Fragment
 };
 
 const MdxPF4Template = ({ data }) => {
+  const SideNav = null //navBuilder(data);
   // Exported components in the folder (i.e. src/components/Alerts/[Alert, AlertIcon, AlertBody])
   // We *should* use the MDXRenderer scope to get the names of these, but that's pretty difficult
   const propComponents = data.metadata.edges
@@ -30,10 +82,9 @@ const MdxPF4Template = ({ data }) => {
   if (!section)
     section = 'component';
   
-  console.log('code', data.mdx.code.body);
-
   return (
-    <Layout>
+    <Layout sideNav={SideNav}>
+      <SEO title="Docs" keywords={['gatsby', 'application', 'react']} />
       <PageSection>
         <Title size="4xl" style={{ textTransform: 'capitalize' }}>
           {data.mdx.frontmatter.title} {section.indexOf('-') === -1 ? section : ''}
@@ -99,6 +150,26 @@ query GetComponent($fileAbsolutePath: String!, $pathRegex: String!) {
           defaultValue {
             value
           }
+        }
+      }
+    }
+  }
+  allGetStartedNavigationJson {
+    edges {
+      node {
+        text
+        path
+      }
+    }
+  }
+  allDesignGuidelinesNavigationJson {
+    edges {
+      node {
+        text
+        path
+        subNav {
+          text
+          path
         }
       }
     }
