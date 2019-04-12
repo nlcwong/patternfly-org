@@ -13,7 +13,7 @@ const LinkPreview = ({ data, name, path }) => {
         <a href={path} target="_blank" rel="noopener noreferrer">
           <div className="preview-container">
             <Img
-              fluid={previewScreenshot[0].node.childImageSharp.fluid}
+              // fluid={previewScreenshot[0].node.childImageSharp.fluid}
               alt={name}
               className="preview-image"
             />
@@ -37,23 +37,24 @@ const LinkPreview = ({ data, name, path }) => {
 )};
 
 export default props => (
-  <StaticQuery
-    query={graphql`
-      query {
-        allFile(filter: {sourceInstanceName: {eq: "previews"}}) {
-          edges {
-            node {
-              relativePath
-              childImageSharp {
-                fluid(maxWidth: 800) {
-                  ...GatsbyImageSharpFluid
-                }
-              }
-            }
-          }
-        }
-      }
-    `}
-    render={data => <LinkPreview data={data} {...props} />}
-  />
+  <LinkPreview data={data} {...props} /> // temp disable redallen
+  // <StaticQuery
+  //   query={graphql`
+  //     query {
+  //       allFile(filter: {sourceInstanceName: {eq: "previews"}}) {
+  //         edges {
+  //           node {
+  //             relativePath
+  //             childImageSharp {
+  //               fluid(maxWidth: 800) {
+  //                 ...GatsbyImageSharpFluid
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `}
+  //   render={data => <LinkPreview data={data} {...props} />}
+  // />
 );
