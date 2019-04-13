@@ -28,7 +28,7 @@ class SideNav extends React.Component {
     const componentRoutes = data.componentPages
       ? data.componentPages.edges.map(e => ({
         to: e.node.path,
-        label: e.node.fields.label,
+        label: e.node.context.title,
         pkg: 'core',
         components: []
       }))
@@ -37,7 +37,7 @@ class SideNav extends React.Component {
     const layoutRoutes = data.layoutPages
       ? data.layoutPages.edges.map(e => ({
         to: e.node.path,
-        label: e.node.fields.label,
+        label: e.node.context.title,
         pkg: 'core',
         components: []
       }))
@@ -46,7 +46,7 @@ class SideNav extends React.Component {
     const demoRoutes = data.demoPages
       ? data.demoPages.edges.map(e => ({
         to: e.node.path,
-        label: e.node.fields.label
+        label: e.node.context.title
       }))
       : [];
 
@@ -158,40 +158,40 @@ export default props => (
     query={graphql`
       query {
         componentPages: allSitePage(
-          filter: { path: { glob: "/documentation/react/components/*" } },
+          filter: { path: { glob: "/documentation/react/components/**" } },
           sort: { fields: path }
         ) {
           edges {
             node {
               path
-              fields {
-                label
+              context {
+                title
               }
             }
           }
         }
         layoutPages: allSitePage(
-          filter: { path: { glob: "/documentation/react/layouts/*" } },
+          filter: { path: { glob: "/documentation/react/layouts/**" } },
           sort: { fields: path }
         ) {
           edges {
             node {
               path
-              fields {
-                label
+              context {
+                title
               }
             }
           }
         }
         demoPages: allSitePage(
-          filter: { path: { glob: "/documentation/react/demos/*" } },
+          filter: { path: { glob: "/documentation/react/demos/**" } },
           sort: { fields: path }
         ) {
           edges {
             node {
               path
-              fields {
-                label
+              context {
+                title
               }
             }
           }

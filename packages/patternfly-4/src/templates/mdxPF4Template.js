@@ -2,68 +2,22 @@ import React from 'react';
 import { graphql, Link } from 'gatsby';
 import { Location } from '@reach/router';
 import { MDXProvider } from '@mdx-js/react';
-import { Nav, NavList, NavExpandable, NavItem, Title, PageSection } from '@patternfly/react-core';
+import { Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import { MDXRenderer } from '../components/mdxRenderer';
+import SideNav from '../components/_react/Documentation/SideNav';
+import Section from '../components/section';
 import LiveEdit from '../components/_react/liveEdit';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import Tokens from '../components/css-variables';
 import './template.scss';
 
-const navBuilder = navData => {
-  console.log('nav data', navData);
-  return (
-    <Location>
-      {({ location }) => {
-        // console.log(location);
-        const currentPath = location.pathname;
-        const { allGetStartedNavigationJson, allDesignGuidelinesNavigationJson } = navData;
-        if (currentPath.indexOf('/get-started') > -1 ) {
-          navData = allGetStartedNavigationJson.edges;
-        } else if (currentPath.indexOf('/design-guidelines') > -1 ) {
-          navData = allDesignGuidelinesNavigationJson.edges;
-        }
-        return (
-          <Nav aria-label="Nav">
-            <NavList>
-              {navData.map(({ node }) => node.subNav ? (
-                <NavExpandable key={node.text} title={node.text} isExpanded={currentPath.indexOf(node.path) > -1} isActive={currentPath.indexOf(node.path) > -1}>
-                  {node.subNav.map(item => (
-                    <NavItem
-                      itemId={item.path}
-                      key={item.path}
-                      isActive={currentPath.indexOf(item.path) > -1}
-                    >
-                      <Link to={item.path}>
-                        {item.text}
-                      </Link>
-                    </NavItem>
-                  ))}
-                </NavExpandable>
-              ): (
-                <NavItem
-                  itemId={node.path}
-                  key={node.path}
-                  isActive={currentPath.indexOf(node.path) > -1}
-                >
-                  <Link to={node.path}>
-                    {node.text}
-                  </Link>
-                </NavItem>
-              ))}
-            </NavList>
-          </Nav>
-        );
-      }}
-    </Location>
-  );
-};
 const components = {
   code: LiveEdit,
   pre: React.Fragment
 };
 
 const MdxPF4Template = ({ data }) => {
-  const SideNav = null //navBuilder(data);
   // Exported components in the folder (i.e. src/components/Alerts/[Alert, AlertIcon, AlertBody])
   // We *should* use the MDXRenderer scope to get the names of these, but that's pretty difficult
   const propComponents = data.metadata.edges
@@ -83,7 +37,7 @@ const MdxPF4Template = ({ data }) => {
     section = 'component';
   
   return (
-    <Layout sideNav={SideNav}>
+    <Layout sideNav={<SideNav />} className="ws-documentation">
       <SEO title="Docs" keywords={['gatsby', 'application', 'react']} />
       <PageSection>
         <Title size="4xl" style={{ textTransform: 'capitalize' }}>
@@ -103,16 +57,11 @@ const MdxPF4Template = ({ data }) => {
         </PageSection>
       )}
 
-      {cssPrefix &&
-        <PageSection>
-          {/* <CSSVars caption={
-            <p>
-              CSS Variables starting with <strong>--{cssPrefix}</strong> from&nbsp;
-                <a href="https://github.com/patternfly/patternfly-next/" target="_blank">patternfly-next</a>
-            </p>
-          } cssPrefix={cssPrefix} /> */}
-        </PageSection>
-      }
+      {cssPrefix && <PageSection variant={PageSectionVariants.light} className="pf-site-background-medium">
+        <Section title="CSS Variables" headingLevel="h3">
+          <Tokens variables={cssPrefix} />
+        </Section>
+      </PageSection>}
     </Layout>
   );
 };
