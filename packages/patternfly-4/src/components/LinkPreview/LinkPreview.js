@@ -13,7 +13,7 @@ const LinkPreview = ({ data, name, path }) => {
         <a href={path} target="_blank" rel="noopener noreferrer">
           <div className="preview-container">
             <Img
-              // fluid={previewScreenshot[0].node.childImageSharp.fluid}
+              fluid={previewScreenshot[0].node.childImageSharp.fluid}
               alt={name}
               className="preview-image"
             />
@@ -44,6 +44,11 @@ export default props => (
           edges {
             node {
               relativePath
+              childImageSharp {
+                fluid(maxWidth: 800) {
+                  ...GatsbyImageSharpFluid
+                }
+              }
             }
           }
         }
