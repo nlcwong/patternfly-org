@@ -65,7 +65,7 @@ exports.createPages = async ({ graphql, actions }) => {
     console.log('\nRedirecting: ' + f + ' to: ' + t);
   })
   await graphql(`
-    query AllDocsFiles {
+    query {
       pf4Docs: allMdx(filter: {fileAbsolutePath: {glob: "**/patternfly-4/_repos/react*/**"} }) {
         edges {
           node {
@@ -161,76 +161,71 @@ exports.createPages = async ({ graphql, actions }) => {
       });
 
       // also create a full demo page for each component
-      console.log(`creating page for: ${examplePath}-full`);
-      actions.createPage({
-        path: `${examplePath}-full`,
-        component: path.resolve(__dirname, node.absolutePath)
-      });
+      // console.log(`creating page for: ${examplePath}-full`);
+      // actions.createPage({
+      //   path: `${examplePath}-full`,
+      //   component: path.resolve(__dirname, node.absolutePath)
+      // });
     });
   });
 };
 
-exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) =>
-  new Promise((resolve, reject) => {
-    if (partialsToLocationsMap === null) {
-      partialsToLocationsMap = {};
-      glob(path.resolve(__dirname, './_repos/core/src/patternfly/**/*.hbs'), { ignore: '**/examples/**' }, (err, files) => {
-        files.forEach(file => {
-          const fileNameArr = file.split('/');
-          const fileName = fileNameArr[fileNameArr.length - 1].slice(0, -4);
-          partialsToLocationsMap[fileName] = file;
-        });
-        continueWebpackConfig({ stage, loaders, actions, plugins, getConfig });
-        resolve();
+exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) => {
+  if (partialsToLocationsMap === null) {
+    partialsToLocationsMap = {};
+    glob(path.resolve(__dirname, './_repos/core/src/patternfly/**/*.hbs'), { ignore: '**/examples/**' }, (err, files) => {
+      files.forEach(file => {
+        const fileNameArr = file.split('/');
+        const fileName = fileNameArr[fileNameArr.length - 1].slice(0, -4);
+        partialsToLocationsMap[fileName] = file;
       });
-    } else {
-      continueWebpackConfig({ stage, loaders, actions, plugins, getConfig });
-      resolve();
-    }
-});
+    });
+  }
 
-const continueWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) => {
-  actions.setWebpackConfig({
-    module: {
-      rules: [
-        // {
-        //   test: /\.md$/,
-        //   loader: 'markdown-loader'
-        // },
-        {
-          test: /\.hbs$/,
-          query: {
-            extensions: '.hbs',
-            partialResolver(partial, callback) {
-              if (partialsToLocationsMap[partial]) {
-                callback(null, partialsToLocationsMap[partial]);
-              } else {
-                callback(new Error(`Could not find partial: ${partial}`), '');
-              }
-            },
-            helperDirs: path.resolve(__dirname, './_repos/core/build/helpers')
-          },
-          loader: 'handlebars-loader'
-        }
-      ]
+  let config = getConfig();
+
+  let nonMDRules = config.module.rules.filter(rule => !(rule.test && rule.test.test('.md')));
+  config.module.rules = [
+    // Core handlebars loader
+    {
+      test: /\.hbs$/,
+      query: {
+        extensions: '.hbs',
+        partialResolver(partial, callback) {
+          if (partialsToLocationsMap[partial]) {
+            callback(null, partialsToLocationsMap[partial]);
+          } else {
+            callback(new Error(`Could not find partial: ${partial}`), '');
+          }
+        },
+        helperDirs: path.resolve(__dirname, './_repos/core/build/helpers')
+      },
+      loader: 'handlebars-loader'
     },
-    resolve: {
-      alias: {
-        '@siteComponents': path.resolve(__dirname, './src/components/_core'),
-        '@components': path.resolve(__dirname, './_repos/core/src/patternfly/components'),
-        '@layouts': path.resolve(__dirname, './_repos/core/src/patternfly/layouts'),
-        '@demos': path.resolve(__dirname, './_repos/core/src/patternfly/demos'),
-        '@project': path.resolve(__dirname, './_repos/core/src'),
-        '@content': path.resolve(__dirname, './src/components/content')
-      }
+    // Core md loader (replace MDX's markdown loader)
+    {
+      test: /\.md$/,
+      loader: 'html-loader!markdown-loader'
     },
-    resolveLoader: {
-      alias: { raw: 'raw-loader' }
-    }
-  });
+    ...nonMDRules
+  ];
+
+  config.resolve.alias = {
+    '@siteComponents': path.resolve(__dirname, './src/components/_core'),
+    '@components': path.resolve(__dirname, './_repos/core/src/patternfly/components'),
+    '@layouts': path.resolve(__dirname, './_repos/core/src/patternfly/layouts'),
+    '@demos': path.resolve(__dirname, './_repos/core/src/patternfly/demos'),
+    '@project': path.resolve(__dirname, './_repos/core/src'),
+    '@content': path.resolve(__dirname, './src/components/content'),
+    ...config.resolve.alias
+  };
+
+  config.resolveLoader = {
+    alias: { raw: 'raw-loader' },
+    ...config.resolveLoader
+  };
 
   if (stage === `build-javascript`) {
-    let config = getConfig();
     config.optimization = {
       runtimeChunk: {
         name: `webpack-runtime`,
@@ -256,6 +251,7 @@ const continueWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) 
         plugins.minifyCss(),
       ].filter(Boolean),
     }
-    actions.replaceWebpackConfig(config);
   }
-};
+
+  actions.replaceWebpackConfig(config);
+}
