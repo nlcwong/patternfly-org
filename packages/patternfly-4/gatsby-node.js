@@ -150,7 +150,7 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     });
 
-    coreDocs && coreDocs.edges.forEach(({ node }) => {
+    coreDocs.edges.forEach(({ node }) => {
       const shortenedPath = node.relativePath.split('/').slice(1, 3).join('/').toLowerCase();
       const examplePath = `/documentation/core/${shortenedPath}`;
 
@@ -168,7 +168,7 @@ exports.createPages = async ({ graphql, actions }) => {
       // });
     });
   });
-};
+}
 
 exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) => {
   if (partialsToLocationsMap === null) {
