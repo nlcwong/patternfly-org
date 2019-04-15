@@ -1,8 +1,7 @@
 import React from 'react';
-import { graphql, Link } from 'gatsby';
-import { Location } from '@reach/router';
-import { MDXProvider } from '@mdx-js/react';
+import { graphql } from 'gatsby';
 import { Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { MDXProvider } from '@mdx-js/react';
 import { MDXRenderer } from '../components/mdxRenderer';
 import SideNav from '../components/_react/Documentation/SideNav';
 import Section from '../components/section';
@@ -14,7 +13,13 @@ import './template.scss';
 
 const components = {
   code: LiveEdit,
-  pre: React.Fragment
+  pre: React.Fragment,
+  h1: (props) => <Title size={'4xl'} {...props}>{props.children}</Title>,
+  h2: (props) => <Title size={'2xl'} {...props}>{props.children}</Title>,
+  h3: (props) => <Title size={'xl'} {...props}>{props.children}</Title>,
+  h4: (props) => <Title size={'lg'} {...props}>{props.children}</Title>,
+  h5: (props) => <Title size={'md'} {...props}>{props.children}</Title>,
+  h6: (props) => <Title size={'xs'} {...props}>{props.children}</Title>,
 };
 
 const MdxPF4Template = ({ data }) => {
