@@ -159,6 +159,13 @@ exports.createPages = async ({ graphql, actions }) => {
         path: examplePath,
         component: path.resolve(__dirname, node.absolutePath)
       });
+
+      // also create a full demo page for each component
+      console.log(`creating page for: ${examplePath}-full`);
+      actions.createPage({
+        path: `${examplePath}-full`,
+        component: path.resolve(__dirname, node.absolutePath)
+      });
     });
   });
 };
