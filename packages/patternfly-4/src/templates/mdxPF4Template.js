@@ -1,6 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { PageSection, PageSectionVariants } from '@patternfly/react-core';
+import AutoLinkHeader from '@content/AutoLinkHeader';
 import { MDXProvider } from '@mdx-js/react';
 import { MDXRenderer } from '../components/mdxRenderer';
 import SideNav from '../components/_react/Documentation/SideNav';
@@ -9,18 +10,16 @@ import LiveEdit from '../components/_react/liveEdit';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import Tokens from '../components/css-variables';
+import PropsTable from '../components/_react/propsTable';
 import './template.scss';
 
 const components = {
   code: LiveEdit,
   pre: React.Fragment,
-  h1: (props) => <Title size={'4xl'} {...props}>{props.children}</Title>,
-  h2: (props) => <Title size={'2xl'} {...props}>{props.children}</Title>,
-  h3: (props) => <Title size={'xl'} {...props}>{props.children}</Title>,
-  h4: (props) => <Title size={'lg'} {...props}>{props.children}</Title>,
-  h5: (props) => <Title size={'md'} {...props}>{props.children}</Title>,
-  h6: (props) => <Title size={'xs'} {...props}>{props.children}</Title>,
 };
+for (let i = 1; i <= 6; i++) {
+  components[`h${i}`] = props => <AutoLinkHeader is={`h${i}`} {...props}>{props.children}</AutoLinkHeader>;
+}
 
 const MdxPF4Template = ({ data }) => {
   // Exported components in the folder (i.e. src/components/Alerts/[Alert, AlertIcon, AlertBody])
@@ -45,9 +44,9 @@ const MdxPF4Template = ({ data }) => {
     <Layout sideNav={<SideNav />} className="ws-documentation">
       <SEO title="Docs" keywords={['gatsby', 'application', 'react']} />
       <PageSection>
-        <Title size="4xl" style={{ textTransform: 'capitalize' }}>
+        <AutoLinkHeader size="4xl" is="h1" style={{ textTransform: 'capitalize' }}>
           {data.mdx.frontmatter.title} {section.indexOf('-') === -1 ? section : ''}
-        </Title>
+        </AutoLinkHeader>
         <MDXProvider components={components}>
           <MDXRenderer>
             {data.mdx.code.body}
@@ -57,8 +56,11 @@ const MdxPF4Template = ({ data }) => {
 
       {props.length > 0 && props.map(component =>
         <PageSection key={component.name}>
-          {props.description}
-          {/* <Props caption={`${component.name} Properties`} propList={component.props} /> */}
+          <PropsTable
+            name={component.name}
+            description={`${component.name} Properties`}
+            props={component.props}
+            />
         </PageSection>
       )}
 
