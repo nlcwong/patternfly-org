@@ -121,12 +121,12 @@ class Layout extends React.Component {
 
       return (
         <>
-          <div class="pf-l-flex pf-m-justify-content-space-between">
-            <div class="pf-u-my-md">
-            <span class="pf-u-ml-xl custom-text-hide">Looking for PatternFly 3? All documentation and code examples are still available.</span>
-            <a href="/" style={{fontWeight: 900, textDecoration: 'none'}} class="pf-u-mx-md">Go to PatternFly 3<i class="fas fa-arrow-right pf-u-mx-sm"></i></a>
+          <div className="pf-l-flex pf-m-justify-content-space-between">
+            <div className="pf-u-my-md">
+            <span className="pf-u-ml-xl custom-text-hide">Looking for PatternFly 3? All documentation and code examples are still available.</span>
+            <a href="/" style={{fontWeight: 900, textDecoration: 'none'}} className="pf-u-mx-md">Go to PatternFly 3<i className="fas fa-arrow-right pf-u-mx-sm"></i></a>
             </div>
-            <div class="pf-u-mr-xl custom-close-button">
+            <div className="pf-u-mr-xl custom-close-button">
               <Button variant="plain" aria-label="Action">
                   <TimesIcon />
               </Button>
