@@ -19,7 +19,7 @@ const LinkPreview = ({ data, name, path }) => {
             />
             <div className="preview-overlay">
               <div className="preview-icon">
-                <i className="fas fa-external-link-alt"></i> 
+                <i className="fas fa-external-link-alt"></i>
               </div>
             </div>
           </div>
@@ -37,24 +37,18 @@ const LinkPreview = ({ data, name, path }) => {
 )};
 
 export default props => (
-  <LinkPreview data={data} {...props} /> // temp disable redallen
-  // <StaticQuery
-  //   query={graphql`
-  //     query {
-  //       allFile(filter: {sourceInstanceName: {eq: "previews"}}) {
-  //         edges {
-  //           node {
-  //             relativePath
-  //             childImageSharp {
-  //               fluid(maxWidth: 800) {
-  //                 ...GatsbyImageSharpFluid
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `}
-  //   render={data => <LinkPreview data={data} {...props} />}
-  // />
+  <StaticQuery
+    query={graphql`
+      query {
+        allFile(filter: {sourceInstanceName: {eq: "previews"}}) {
+          edges {
+            node {
+              relativePath
+            }
+          }
+        }
+      }
+    `}
+    render={data => <LinkPreview data={data} {...props} />}
+  />
 );

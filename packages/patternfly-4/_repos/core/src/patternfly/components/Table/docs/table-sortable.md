@@ -1,5 +1,3 @@
-<mark>**All simple table accessibility and usage requirements apply.**</mark>
-
 ### Accessibility
 
 | Attribute | Applied To | Outcome |

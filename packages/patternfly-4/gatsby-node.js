@@ -78,7 +78,7 @@ exports.createPages = async ({ graphql, actions }) => {
           }
         }
       },
-      coreDocs: allFile(filter: { sourceInstanceName: { eq: "core" }, absolutePath: { glob: "**/examples/index.js" } }) {
+      coreDocs: allFile(filter: { absolutePath: { glob: "**/_repos/core/**/examples/index.js" } } ) {
         edges {
           node {
             relativePath
@@ -151,7 +151,7 @@ exports.createPages = async ({ graphql, actions }) => {
     });
 
     coreDocs && coreDocs.edges.forEach(({ node }) => {
-      const shortenedPath = node.relativePath.split('/').slice(2, 4).join('/').toLowerCase();
+      const shortenedPath = node.relativePath.split('/').slice(1, 3).join('/').toLowerCase();
       const examplePath = `/documentation/core/${shortenedPath}`;
 
       console.log(`creating core doc page (${node.absolutePath}):`, examplePath);
@@ -186,10 +186,10 @@ const continueWebpackConfig = ({ stage, loaders, actions, plugins, getConfig }) 
   actions.setWebpackConfig({
     module: {
       rules: [
-        {
-          test: /\.md$/,
-          loader: 'html-loader!markdown-loader'
-        },
+        // {
+        //   test: /\.md$/,
+        //   loader: 'markdown-loader'
+        // },
         {
           test: /\.hbs$/,
           query: {

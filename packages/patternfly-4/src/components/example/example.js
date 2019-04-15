@@ -5,7 +5,7 @@ import AutoLinkHeader from '@content/AutoLinkHeader';
 import LiveDemo from './liveDemo';
 import Section from '../section';
 import Preview from '../_core/Preview';
-import LinkPreview from '../LinkPreview';
+// import LinkPreview from '../LinkPreview';
 // import ComponentItems from '../_core/Example/ComponentItems';
 
 const propTypes = {
@@ -85,7 +85,7 @@ class Example extends React.Component {
         <Section>
           <AutoLinkHeader size="lg" is="h3">{title}</AutoLinkHeader>
           <LiveDemo raw={raw.trim()} path={path} fullPageOnly live={false} className={className}>
-            <LinkPreview name={title} path={path} />
+            // <LinkPreview name={title} path={path} />
           </LiveDemo>
         </Section>
       );

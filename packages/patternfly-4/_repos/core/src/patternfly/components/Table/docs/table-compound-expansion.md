@@ -1,11 +1,5 @@
 ### Table Compound Expansion Notes
 
-<mark>**All simple table accessibility and usage requirements apply.**</mark>
-<br>
-<mark>**All sortable table accessibility and usage requirements apply.**</mark>
-<br>
-<mark>**All checkbox/action button accessibility and usage requirements apply.**</mark>
-
 ### Accessibility
 | Attribute | Applied To | Outcome |
 | -- | -- | -- |

@@ -1,7 +1,5 @@
 ### Table Expandable Notes
 
-<mark>**All compact table accessibility and usage requirements apply.**</mark>
-
 ### Usage
 
 | Class | Applied To | Outcome |

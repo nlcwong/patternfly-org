@@ -85,9 +85,9 @@ module.exports = {
     'gatsby-plugin-no-sourcemaps',
     'gatsby-transformer-json',
     'gatsby-plugin-react-helmet',
-    // 'gatsby-transformer-sharp',
-    // 'gatsby-plugin-sharp',
-    // 'gatsby-remark-images',
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sharp',
+    'gatsby-remark-images',
     'gatsby-plugin-sitemap',
     'gatsby-plugin-catch-links', // catch links in markdown files and use gatsby-link to navigate
     'gatsby-plugin-emotion',
