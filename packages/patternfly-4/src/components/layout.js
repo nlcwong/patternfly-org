@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StaticQuery, graphql, withPrefix, Link, navigate } from 'gatsby';
+import { StaticQuery, graphql, Link, navigate } from 'gatsby';
+import { Location } from '@reach/router';
 import Header from './header';
 import Footer from './footer/footer';
 import {
   Brand,
-  Button,
   Nav,
   NavItem,
   NavList,
@@ -21,12 +21,32 @@ import {
   Form,
   TextInput
 } from '@patternfly/react-core';
-import { Location } from '@reach/router';
+import Banner from './banner';
 import brandImg from '../images/PatternFly_logo.svg';
-import { TimesIcon } from '@patternfly/react-icons';
 import './layout.scss';
 
+// Set initial state
+let state = { isBannerOpen: true };
+
 class Layout extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    // Retrieve the last state
+    this.state = state;
+  }
+
+  componentWillUnmount() {
+    // Remember state for the next mount
+    state = this.state;
+  }
+
+  closeBanner = () => {
+    this.setState({
+      isBannerOpen: false
+    })
+  };
 
   componentDidMount() {
     // eslint-disable-next-line no-undef
@@ -48,6 +68,7 @@ class Layout extends React.Component {
 
   render() {
     const { tertiaryNav, sideNav } = this.props;
+    const { isBannerOpen } = this.state;
 
     return (<StaticQuery query={graphql`
       query SiteTitleQuery {
@@ -69,7 +90,6 @@ class Layout extends React.Component {
       const PageNav = (
         <Location>
           {({ location }) => {
-            // console.log(location);
             const currentPath = location.pathname;
             return (
               <Nav aria-label="Nav">
@@ -120,27 +140,21 @@ class Layout extends React.Component {
       );
 
       return (
-        <>
-          <div className="pf-l-flex pf-m-justify-content-space-between">
-            <div className="pf-u-my-md">
-            <span className="pf-u-ml-xl custom-text-hide">Looking for PatternFly 3? All documentation and code examples are still available.</span>
-            <a href="/" style={{fontWeight: 900, textDecoration: 'none'}} className="pf-u-mx-md">Go to PatternFly 3<i className="fas fa-arrow-right pf-u-mx-sm"></i></a>
-            </div>
-            <div className="pf-u-mr-xl custom-close-button">
-              <Button variant="plain" aria-label="Action">
-                  <TimesIcon />
-              </Button>
-            </div>
-          </div>
-          <Header siteTitle={data.site.siteMetadata.title} />
-          <Page isManagedSidebar={sideNav !== null} header={SiteHeader} sidebar={sideNav ? <PageSidebar nav={sideNav} /> : null}>
-            {tertiaryNav && <PageSection variant={PageSectionVariants.light}>
-              {tertiaryNav}
-            </PageSection>}
-            {this.props.children}
-          </Page>
-          <Footer></Footer>
-        </>
+        <Location>
+          {({ location }) => (
+            <>
+            {isBannerOpen && location.pathname === '/v4/' && <Banner onClose={this.closeBanner} />}
+            <Header siteTitle={data.site.siteMetadata.title} />
+            <Page isManagedSidebar={sideNav !== null} header={SiteHeader} sidebar={sideNav ? <PageSidebar nav={sideNav} /> : null}>
+              {tertiaryNav && <PageSection variant={PageSectionVariants.light}>
+                {tertiaryNav}
+              </PageSection>}
+              {this.props.children}
+            </Page>
+            <Footer></Footer>
+          </>
+        )}
+        </Location>
       )
       }} />);
   }

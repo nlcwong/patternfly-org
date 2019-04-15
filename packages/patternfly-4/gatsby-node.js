@@ -52,9 +52,13 @@ exports.onCreateNode = ({ node, actions }) => {
 
 exports.createPages = async ({ graphql, actions }) => {
   const redirects = [
-    { f: `/get-started`, t: `/get-started/about` },
-    { f: `/design-guidelines`, t: `/design-guidelines/styles/icons` },
-    { f: `/documentation`, t: `/documentation/react/components/aboutmodal` }
+    { f: '/get-started', t: '/get-started/about' },
+    { f: '/design-guidelines', t: '/design-guidelines/styles/icons' },
+    { f: '/design-guidelines/styles', t: '/design-guidelines/styles/icons'},
+    { f: '/documentation', t: '/documentation/react/components/aboutmodal' },
+    { f: '/documentation/react/components', t: '/documentation/react/components/aboutmodal'},
+    { f: '/documentation/react/layouts', t: '/documentation/react/layouts/bullseye'},
+    { f: '/documentation/react/demos', t: '/documentation/react/demos/pagelayout'}
   ];
   redirects.forEach(({ f, t }) => {
     actions.createRedirect({
