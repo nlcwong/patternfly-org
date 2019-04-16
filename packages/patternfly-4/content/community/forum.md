@@ -1,0 +1,4 @@
+---
+path: "/community/forum"
+---
+Forum

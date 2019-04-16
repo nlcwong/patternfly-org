@@ -1,0 +1,24 @@
+[
+  {
+    "text": "Contribute",
+    "path": "/community/contribute/",
+    "subNav": [
+      {
+        "text": "Designers",
+        "path": "/community/contribute/designers"
+      },
+      {
+        "text": "Developers",
+        "path": "/community/contribute/developers"
+      },
+      {
+        "text": "Code of conduct",
+        "path": "/community/contribute/code-of-conduct"
+      }
+    ]
+  },
+  {
+    "text": "Forum",
+    "path": "/community/forum"
+  }
+]

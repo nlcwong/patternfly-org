@@ -10,5 +10,9 @@
   {
     "text": "Documentation",
     "path": "/documentation"
+  },
+  {
+    "text": "Community",
+    "path": "/community"
   }
 ]

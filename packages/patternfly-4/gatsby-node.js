@@ -58,6 +58,7 @@ exports.createPages = ({ graphql, actions }) => {
     { f: '/get-started', t: '/get-started/about' },
     { f: '/design-guidelines', t: '/design-guidelines/styles/icons' },
     { f: '/design-guidelines/styles', t: '/design-guidelines/styles/icons'},
+    { f: '/community', t: '/community/contribute/designers' },
     { f: '/documentation', t: '/documentation/react/components/aboutmodal' },
     { f: '/documentation/react/components', t: '/documentation/react/components/aboutmodal'},
     { f: '/documentation/react/layouts', t: '/documentation/react/layouts/bullseye'},

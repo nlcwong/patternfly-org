@@ -62,13 +62,20 @@ export default function MarkdownPageTemplate({
 }) {
   let SideNav;
   let content;
-  const { markdownRemark, allGetStartedNavigationJson, allDesignGuidelinesNavigationJson } = data;// data.markdownRemark holds our post data
+  const { 
+    markdownRemark, 
+    allGetStartedNavigationJson, 
+    allDesignGuidelinesNavigationJson, 
+    allCommunityNavigationJson 
+  } = data;// data.markdownRemark holds our post data
   const { frontmatter, html } = markdownRemark;
 
   if (frontmatter.path.indexOf('/get-started') > -1 ) {
     SideNav = navBuilder(allGetStartedNavigationJson.edges);
   } else if (frontmatter.path.indexOf('/design-guidelines') > -1 ) {
     SideNav = navBuilder(allDesignGuidelinesNavigationJson.edges);
+  } else if (frontmatter.path.indexOf('/community') > -1) {
+    SideNav = navBuilder(allCommunityNavigationJson.edges);
   }
 
   content = <div
@@ -104,6 +111,18 @@ export const pageQuery = graphql`
       }
     }
     allDesignGuidelinesNavigationJson {
+      edges {
+        node {
+          text
+          path
+          subNav {
+            text
+            path
+          }
+        }
+      }
+    }
+    allCommunityNavigationJson {
       edges {
         node {
           text
