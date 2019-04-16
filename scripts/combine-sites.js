@@ -1,6 +1,10 @@
 // Copies build outputs from patternfly 3 and patternfly 4 and combines it into the out directory
 
 const fs = require('fs-extra');
+<<<<<<< HEAD
+=======
+const path = require('path');
+>>>>>>> 0e449e8f1488abc118ec015214e9ebda6b30b435
 
 const pf3_build = 'packages/patternfly-3/_site/.';
 const pf4_build = 'packages/patternfly-4/public/.';
@@ -34,6 +38,12 @@ fs.remove(build_root, (errRemove) => {
       }
       // eslint-disable-next-line no-console
       console.log(`Copied pf4 build into ${pf4_root}`);
+<<<<<<< HEAD
+=======
+
+      fs.moveSync(path.join(pf4_root, 'sitemap.xml'), path.join(build_root, 'sitemap.xml'));
+      fs.moveSync(path.join(pf4_root, 'robots.txt'), path.join(build_root, 'robots.txt'));
+>>>>>>> 0e449e8f1488abc118ec015214e9ebda6b30b435
     });
   });
 

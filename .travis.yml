@@ -8,14 +8,22 @@ notifications:
 deploy:
   provider: pages
   skip_cleanup: true
+<<<<<<< HEAD
   github_token: $GH_TOKEN # Set in the settings page of your repository, as a secure variable
+=======
+  github_token: $AUTH_TOKEN # Set in the settings page of your repository, as a secure variable
+>>>>>>> 0e449e8f1488abc118ec015214e9ebda6b30b435
   keep_history: true
   local_dir: out
   repo: patternfly/patternfly.github.io
   target_branch: master
   verbose: true
   on:
+<<<<<<< HEAD
     branch: gatsby2
+=======
+    branch: master
+>>>>>>> 0e449e8f1488abc118ec015214e9ebda6b30b435
 git:
   depth: 1
 before_install:

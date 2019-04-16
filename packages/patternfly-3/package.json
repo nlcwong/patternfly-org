@@ -5,7 +5,11 @@
   "author": "Red Hat",
   "scripts": {
     "prebuild": "npm install && bundle install",
+<<<<<<< HEAD
     "build": "grunt build:staging --baseurl=/",
+=======
+    "build": "grunt build:production --baseurl=/",
+>>>>>>> 0e449e8f1488abc118ec015214e9ebda6b30b435
     "build-dev": "./node_modules/patternfly-eng-release/scripts/_build.sh -o",
     "dev": "grunt serve",
     "publish": "ghpages",
