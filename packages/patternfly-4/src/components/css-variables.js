@@ -8,7 +8,7 @@ import { StyleSheet, css } from '@patternfly/react-styles';
 const propTypes = {
   variables: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   filter: PropTypes.string,
-  exact: PropTypes.boolean
+  exact: PropTypes.bool
 };
 
 const defaultProps = {
@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
     display: 'inline-block',
     height: 18,
     width: 18,
-    border: `${tokensModule.global_BorderWidth_sm.var} solid ${tokensModule.global_BorderColor.var}`,
+    borderTop: `1px solid #72767b`,
+    borderBottom: `1px solid #72767b`,
     marginRight: tokensModule.global_spacer_sm.var,
     verticalAlign: 'middle'
   },
@@ -64,7 +65,7 @@ class Tokens extends React.Component {
         }
       }
       dataRows.push([
-        key, 
+        key,
         token.name,
         token.value,
       ]);
@@ -97,11 +98,11 @@ class Tokens extends React.Component {
     dataRows.forEach(dataRow => {
       let toPush = [];
       rows.push(toPush.concat([
-        <span className={css(styles.tokenCell)}>{dataRow[1]}</span>,
-        <span className={css(styles.tokenCell)}>{dataRow[0]}</span>,
-        <span>
-          {isColorRegex.test(dataRow[2]) && <span className={css(styles.color)} style={{backgroundColor: dataRow[2]}} />}
-          <span className={css(styles.value)}>{dataRow[2]}</span>
+        <span key={dataRow[1]} className={css(styles.tokenCell)}>{dataRow[1]}</span>,
+        <span key ={dataRow[0]} className={css(styles.tokenCell)}>{dataRow[0]}</span>,
+        <span key={dataRow[2]}>
+          {isColorRegex.test(dataRow[2]) && <span key={dataRow[2] + 'ic'} className={css(styles.color)} style={{backgroundColor: dataRow[2]}} />}
+          <span key={dataRow[2] + 'i'} className={css(styles.value)}>{dataRow[2]}</span>
         </span>
       ]));
     }, []);
@@ -145,13 +146,13 @@ class Tokens extends React.Component {
       <>
         <Form className="ws-search" onSubmit={event => { event.preventDefault(); return false; }}>
           <TextInput
-                type="text"
-                id="primaryIconsSearch"
-                name="primaryIconsSearch"
-                placeholder="Search Variables"
-                value={searchValue}
-                onChange={this.handleSearchChange}
-              />
+            type="text"
+            id="primaryIconsSearch"
+            name="primaryIconsSearch"
+            placeholder="Search CSS Variables"
+            value={searchValue}
+            onChange={this.handleSearchChange}
+          />
         </Form>
         <Table variant="compact" aria-label="CSS Variables" sortBy={sortBy} onSort={this.onSort} cells={columns} rows={filteredRows}>
           <TableHeader />

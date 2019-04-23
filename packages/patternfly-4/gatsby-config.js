@@ -1,64 +1,71 @@
 const globImporter = require('node-sass-glob-importer');
 
+const ignore = [
+  `**/dist`,
+  `**/helpers`,
+  `**/scripts`,
+  `**/styles`,
+  `**/build`,
+  `**/utils`,
+  `**/test-helpers`,
+  /.*react-styles.*/,
+  /.*react-docs.*/,
+  /.*react-integration.*/,
+  `**/\..*`, // dotfiles
+  `**/*.d.ts`,
+  `**/*.test.*`,
+  `**/tsconfig.*`,
+  `**/tslint.*`,
+  `**/README.*`,
+  `**/CHANGELOG.*`,
+];
+
 module.exports = {
-  pathPrefix: '/4.0',
+  pathPrefix: '/v4',
   siteMetadata: {
     title: 'PatternFly 4',
     description: 'Documentation for PatternFly 4',
     author: 'Red Hat',
-    siteUrl: 'https://v2.patternfly.org'
+    siteUrl: 'https://www.patternfly.org'
   },
   plugins: [
     {
-      resolve: `gatsby-plugin-page-creator`,
-      options: {
-        path: `${__dirname}/content`,
-      },
-    },
-    {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `markdown-pages`,
+        name: `content-pages`,
         path: `${__dirname}/content`
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-core`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-charts`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `react`,
+        name: `react-pages`,
         path: `${__dirname}/_repos/react-table`,
-        ignore: [`**/*.json`]
+        ignore: ignore.concat(`**/*.json`, `**/index.*`)
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `ts-docs`,
-        path: `${__dirname}/ts-docs/`
-      }
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `core`,
-        path: `${__dirname}/_repos/core`,
-        ignore: [`**/*.scss`]
+        name: `core-pages`,
+        path: `${__dirname}/_repos/core/src`,
+        ignore: [`**/*.scss`, `**/*.md`]
       }
     },
     {
@@ -80,49 +87,25 @@ module.exports = {
     'gatsby-plugin-react-helmet',
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
-    'gatsby-remark-images',
     'gatsby-plugin-sitemap',
-    'gatsby-plugin-catch-links', // catch links in markdown files and use gatsby-link to navigate
     'gatsby-plugin-emotion',
     'gatsby-plugin-offline', // this plugin enables Progressive Web App + Offline functionality https://gatsby.app/offline
-    'gatsby-plugin-typescript',
-    'gatsby-transformer-react-docgen',
+    {
+      // Our custom plugin for *.js?x *.ts?x files to get prop types
+      resolve: require.resolve(`${__dirname}/plugins/gatsby-transformer-react-docgen-typescript`),
+    },
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        host: 'https://v2.patternfly.org',
-        sitemap: 'https://v2.patternfly.org/sitemap.xml',
         policy: [{ userAgent: '*', allow: '/' }]
       }
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-mdx`,
       options: {
-        plugins: [
-          'gatsby-remark-autolink-headers',
-          // {
-          //   resolve: `gatsby-remark-prismjs`,
-          //   options: {
-          //     classPrefix: 'prism-language-'
-          //   }
-          // },
-          {
-            resolve: `gatsby-remark-images`,
-            options: {
-              maxWidth: 700,
-            }
-          }
-        ]
-      }
-    },
-    {
-      resolve: `gatsby-mdx-tmp`,
-      options: {
-        extensions: ['.mdx'],
-        defaultLayouts: {
-          default: require.resolve("./src/templates/mdxPageTemplate.js")
-        },
+        extensions: ['.mdx', '.md'],
         gatsbyRemarkPlugins: [
+          'gatsby-remark-autolink-headers',
           {
             resolve: `gatsby-remark-images`,
             options: {
@@ -150,12 +133,6 @@ module.exports = {
         theme_color: '#663399',
         display: 'minimal-ui'
       },
-    },
-    // {
-    //   resolve: 'gatsby-remark-embed-snippet',
-    //   options: {
-    //     directory: `${__dirname}/_repos/core`
-    //   }
-    // },
+    }
   ],
 }
