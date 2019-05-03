@@ -3,39 +3,33 @@ process.setMaxListeners(500);
 const captureWebsite = require('capture-website');
 const fs = require('fs');
 const path = require('path');
-const src = path.resolve(__dirname, '../content/preview-screenshots.json');
+const src = path.resolve(__dirname, './preview-screenshots.json');
 const previews = JSON.parse(fs.readFileSync(src));
-const gatsbyConfig = require('../gatsby-config');
 
 const options = {
-	width: 1280,
-  height: 800,
-  overwrite: true, 
-  element: '#___gatsby > div',
-  scaleFactor: 2,
-  fullPage: true,
-  delay: 1
-};
-
-const backgroundOptions = {
   width: 1280,
   height: 800,
   overwrite: true, 
   waitForElement: '#___gatsby > div',
   scaleFactor: 2,
-  delay: 1
+  delay: 1,
+  overwrite: true
 };
 
 function fileNameFromUrl(url) {
-  const url = gatsbyConfig.siteMetadata.siteUrl;
-  return url.replace(url, '').replace(/\//g, '!').replace(/\?/g, '__').replace(/\s/g, '_').replace(/%20/g, '_');
+  return url
+    .replace('?', '/?')
+    .replace('patternfly-4/', 'documentation/react/')
+    .replace(/http.*\.(org|sh)/, '')
+    .replace(/\//g, '!');
 }
 
 (async () => {
-  await Promise.all(previews[0].map(url => {
-		return captureWebsite.file(url, `previews/${fileNameFromUrl(url)}.png`, options);
-  }));
-  await Promise.all(previews[1].map(url => {
-		return captureWebsite.file(url, `previews/${fileNameFromUrl(url)}.png`, backgroundOptions);
+  await Promise.all(previews.paths.map(path => {
+    const combinedOptions = {
+      ...options,
+      ...path.options
+    };
+		return captureWebsite.file(path.url, `previews/${fileNameFromUrl(path.url)}.png`, combinedOptions);
 	}));
 })();

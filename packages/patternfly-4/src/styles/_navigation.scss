@@ -3,6 +3,12 @@
   .pf-c-page__header-brand {
     background-color: #151515;
   }
+  @media screen and (min-width: 992px) {
+    .pf-c-page__header-nav {
+      margin-right: 50px;
+      margin-left: 50px;
+    }
+  }
   &-brand-toggle {
     display: none;
     @media (max-width: 768px) {
@@ -70,7 +76,6 @@
 }
 
 .pf-c-nav__simple-list .pf-c-nav__link {
-  margin-left: var(--pf-global--spacer--xs);
   border-left: 4px solid transparent;
   &:active,
   &:hover {
@@ -83,7 +88,7 @@
     border-left-color: #06c;
   }
 }
-.pf-c-nav__list {
+.pf-c-nav__list:not(.pf-c-nav__list-footer) {
   .pf-m-current.pf-c-nav__link,
   .pf-m-current > .pf-c-nav__link {
     font-size: var(--pf-global--FontSize--md);
@@ -91,6 +96,18 @@
     color: #151515;
     &.pf-m-current {
       color: #151515;
+    }
+    padding-top: var(--pf-global--spacer--sm) !important;
+    border-left: 4px solid transparent;
+    &:active,
+    &:hover {
+      background-color: #f8f8f8;
+      border-left-color: #06c;
+      font-weight: var(--pf-global--FontWeight--normal);
+    }
+    &.pf-m-current {
+      background-color: #f8f8f8;
+      border-left-color: #06c;
     }
   }
   .pf-c-nav__link.pf-m-hover,
@@ -101,6 +118,14 @@
     font-size: var(--pf-global--FontSize--lg);
     font-weight: var(--pf-global--FontWeight--semi-bold);
     color: #252527;
+    padding-top: var(--pf-global--spacer--sm) !important;
+    border-left: 4px solid transparent;
+    &:active,
+    &:hover {
+      background-color: #f8f8f8;
+      border-left-color: #06c;
+      font-weight: var(--pf-global--FontWeight--normal);
+    }
     &:hover::after {
       background-color: transparent;
     }
@@ -120,5 +145,26 @@
   &__title {
     color: #06c;
     font-weight: 700 !important;
+  }
+}
+
+
+
+.pf-site-md-nav {
+  margin-top: 16px;
+
+  .pf-c-nav__link {
+    padding-top: var(--pf-global--spacer--sm) !important;
+    border-left: 4px solid transparent;
+    &:active,
+    &:hover {
+      background-color: #f8f8f8;
+      border-left-color: #06c;
+      font-weight: var(--pf-global--FontWeight--normal);
+    }
+    &.pf-m-current {
+      background-color: #f8f8f8;
+      border-left-color: #06c;
+    }
   }
 }

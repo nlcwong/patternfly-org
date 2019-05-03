@@ -8,6 +8,10 @@
         "path": "/design-guidelines/styles/colors"
       },
       {
+        "text": "Colors for charts",
+        "path": "/design-guidelines/styles/chart-colors"
+      },
+      {
         "text": "Icons",
         "path": "/design-guidelines/styles/icons"
       },
@@ -36,6 +40,10 @@
       {
         "text": "Buttons and links",
         "path": "/design-guidelines/usage-and-behavior/buttons-and-links"
+      },
+      {
+        "text": "Charts",
+        "path": "/design-guidelines/usage-and-behavior/charts"
       },
       {
         "text": "Data input",
@@ -76,6 +84,10 @@
       {
         "text": "Toolbar",
         "path": "/design-guidelines/usage-and-behavior/toolbar"
+      },
+      {
+        "text": "Wizard",
+        "path": "/design-guidelines/usage-and-behavior/wizard"
       }
     ]
   },

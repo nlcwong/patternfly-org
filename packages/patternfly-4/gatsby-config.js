@@ -86,6 +86,7 @@ module.exports = {
     'gatsby-transformer-json',
     'gatsby-plugin-react-helmet',
     'gatsby-transformer-sharp',
+    'gatsby-plugin-catch-links',
     'gatsby-plugin-sharp',
     'gatsby-plugin-sitemap',
     'gatsby-plugin-emotion',
@@ -111,7 +112,8 @@ module.exports = {
             options: {
               maxWidth: 700
             }
-          }
+          },
+          'gatsby-remark-copy-linked-files'
         ]
       }
     },
@@ -131,7 +133,8 @@ module.exports = {
         start_url: '/',
         background_color: '#663399',
         theme_color: '#663399',
-        display: 'minimal-ui'
+        display: 'minimal-ui',
+        include_favicon: false
       },
     }
   ],

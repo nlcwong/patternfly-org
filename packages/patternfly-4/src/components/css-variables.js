@@ -4,6 +4,7 @@ import { Form, TextInput } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, sortable, SortByDirection } from '@patternfly/react-table';
 import * as tokensModule from '@patternfly/react-tokens';
 import { StyleSheet, css } from '@patternfly/react-styles';
+import './content/icons.scss';
 
 const propTypes = {
   variables: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
@@ -154,7 +155,7 @@ class Tokens extends React.Component {
             onChange={this.handleSearchChange}
           />
         </Form>
-        <Table variant="compact" aria-label="CSS Variables" sortBy={sortBy} onSort={this.onSort} cells={columns} rows={filteredRows}>
+        <Table className="pf-m-grid-xl" variant="compact" aria-label="CSS Variables" sortBy={sortBy} onSort={this.onSort} cells={columns} rows={filteredRows}>
           <TableHeader />
           <TableBody />
         </Table>

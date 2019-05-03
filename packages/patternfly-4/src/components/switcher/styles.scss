@@ -1,10 +1,19 @@
 .pf-site-switcher-group {
   display: flex;
   flex-direction: column;
-  align-items: end !important;
+  align-items: flex-start !important;
   &__title {
     color: #06c;
-    font-weight: 700 !important;
+    margin-top: 24px;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+  }
+
+  .pf-w-btn-left.pf-c-button,
+  .pf-w-btn-right.pf-c-button {
+    &.pf-m-active {
+      background-color:#00659C;
+    }
   }
 
   .pf-w-btn-left.pf-c-button,

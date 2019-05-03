@@ -10,8 +10,10 @@ import ReactDOM from 'react-dom';
 
 const styles = {
   iconCell: css`
-    height: 198px;
-    width: 240px;
+    padding-top: 32px;
+    padding-right: 16px;
+    padding-bottom: 32px;
+    padding-left: 16px;
     // box-shadow: 0 4px 8px 2px rgba(0, 0, 0, 0.12), 0 6px 20px 2px rgba(0, 0, 0, 0.12);
     background-color: rgba(190, 225, 244, 0.5);
     cursor: pointer;
@@ -19,23 +21,27 @@ const styles = {
       background-color: rgba(190, 225, 244, 0.75);
     }
   `,
-  iconbox: css`height: 121px;`,
   textbox: css`
-    width: 234px; 
-    height: 71px;
+    text-align: center;
     margin: 3px;
-    background-color: white;
-    padding: 16px;
+    padding-top: 16px;
     overflow: hidden;
   `,
   label: css`
-    font-size: ${labelFontSize.var};
+    font-size: 18px;
     word-break: break-all;
   `,
   innerItem: css`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    > * {
+      > * {
+        width: 32px;
+        height: 32px;
+      }
+    }
   `,
   labelHovered: css`
     font-size: ${labelFontSize.var};
@@ -43,31 +49,26 @@ const styles = {
     transform: scale(0.7);
   `,
   popover: css`
-    .pf-c-popover__arrow {
-      // background: linear-gradient(45deg,rgba(0,0,0,0.80) 50%, transparent 50%);
-      background-color: rgba(0, 0, 0, 1.0);
-    }
-    .pf-c-popover__content {
-      background-color: rgba(0, 0, 0, 1.0);
-      color: white;
-    }
-    .pf-c-popover__content > .pf-c-button {
-      color: white;
-    }
-    .pf-c-title {
-      color: white;
+    width: 500px;
+    .pf-c-popover {
+      width: 100%;
     }
   `,
   popoverHeader: css`
     margin-right: 10px;
   `,
   popoverBody: css`
-    color: white; 
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
   `,
-  copyButtons: css`padding-bottom: 16px; display: flex;`,
+  textDescription: css`
+    margin-bottom: 16px;
+  `,
+  copyButtons: css`
+    display: flex;
+    margin-left: -16px;
+  `,
   scaleDown: css`transform: scale(.7);`,
   openContainer: css`display: flex;`,
   leftContainer: css`
@@ -97,7 +98,36 @@ class IconCard extends React.Component {
   constructor(props) {
     super(props);
     this.iconRef = React.createRef();
+    this.state = { showBody: false };
+    this.galleryItemRef = React.createRef();
+    this.galleryItemBodyRef = React.createRef();
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
+
+  componentDidMount = () => {
+    document.addEventListener('click', this.handleClickOutside);
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+
+  handleClickOutside(event) {
+    // Little timeout to let the active component's showBody state resolve first
+    setTimeout(function() {
+      if (this.state.showBody && !this.galleryItemRef.current.contains(event.target) && !this.galleryItemBodyRef.current.contains(event.target)) {
+        this.setState({
+          showBody: false
+        });
+      }
+    }.bind(this), 10);
+  }
+
+  toggleBody = () => {
+    this.setState(prevState => ({
+      showBody: !prevState.showBody
+   }))
+  };
 
   onCopyReact = event => {
     event.stopPropagation();
@@ -131,25 +161,23 @@ class IconCard extends React.Component {
   
   render() {
     const { icon: Icon, name } = this.props;
+    const { showBody } = this.state;
     const popoverBody = (
       <div css={styles.popoverBody}>
-        <div css={styles.copyButtons}>
-          <Box><Button variant="secondary" onClick={this.onCopyReact}>Copy React</Button></Box>
-          <div css={css`width: 16px; height: 8px;`}></div>
-          <Box><Button variant="secondary" onClick={this.onCopyHtml}>Copy HTML</Button></Box>
+        <div css={styles.textDescription} style={{'display': 'none'}}>
+          <div>Indicates that a user may create or add something.</div>
         </div>
-        <Box><Button variant="secondary" onClick={this.onDownloadSvg}>Download SVG</Button></Box>
+        <div css={styles.copyButtons}>
+          <Box><Button variant="link" onClick={this.onDownloadSvg}>Download SVG</Button></Box>
+          <Box><Button variant="link" onClick={this.onCopyHtml}>Copy HTML</Button></Box>
+          <Box><Button variant="link" onClick={this.onCopyReact}>Copy React</Button></Box>
+        </div>
       </div>
     );
     return (
-      <GalleryItem>
-        <Popover 
-          css={styles.popover}
-          position="right" 
-          headerContent={<div css={styles.popoverHeader}>{name}</div>} 
-          bodyContent={popoverBody}
-        >
-          <div css={styles.iconCell}>
+      <>
+        <GalleryItem onClick={this.toggleBody}>
+          <div css={styles.iconCell} style={{height: '100%'}} ref={this.galleryItemRef}>
             <div css={styles.iconbox}>
               <Bullseye>
                 <div css={styles.innerItem}>
@@ -163,8 +191,27 @@ class IconCard extends React.Component {
               {name}
             </div>
           </div>
-        </Popover>
-      </GalleryItem>
+          <div className="pf-c-popover pf-m-bottom" style={{display: showBody ? 'block' : 'none', boxShadow: 'unset'}}>
+            <div className="pf-c-popover__arrow" style={{top: '24px', zIndex: '1'}} />
+          </div>
+        </GalleryItem>
+        <GalleryItem style={{display: showBody ? 'block' : 'none', gridColumn: '1 / -1'}}>
+          <div className="pf-c-popover pf-m-bottom" role="dialog" aria-modal="true" aria-labelledby="popover-bottom-header" aria-describedby="popover-bottom-body" style={{maxWidth: 'unset'}} ref={this.galleryItemBodyRef}>
+            {/* <div className="pf-c-popover__arrow" /> */}
+            <div className="pf-c-popover__content" style={{zIndex: '2'}}>
+              <button className="pf-c-button pf-m-plain" aria-label="Close" onClick={this.toggleBody}>
+                <i className="fas fa-times" aria-hidden="true"></i>
+              </button>
+              <h1 className="pf-c-title pf-m-xl" id="popover-bottom-header" style={{marginTop: 0}}>
+                {name}
+              </h1>
+              <div className="pf-c-popover__body" id="popover-bottom-body">
+                {popoverBody}
+              </div>
+            </div>
+          </div>
+        </GalleryItem>
+      </>
     );
   }
 

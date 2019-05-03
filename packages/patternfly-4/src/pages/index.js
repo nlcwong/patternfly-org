@@ -34,7 +34,7 @@ const IndexPage = () => (
         </GridItem>
       </Grid>
     </PageSection>
-    <PageSection variant={PageSectionVariants.light}>
+    <PageSection className="pf4-m-background-white">
       <Grid>
         <GridItem sm={12} md={6} mdOffset={3} className="pf-u-py-2xl pf-u-text-align-center">
           <Title size="4xl" id="AboutPatternFly4" className="pf-u-mb-md">About PatternFly 4</Title>
@@ -75,10 +75,10 @@ const IndexPage = () => (
               </TextContent>
             </GridItem>
             <GridItem sm={12} md={6}>
-              <object type="image/svg+xml" className="pf4-c-image__laptop" aria-label="laptop image">Laptop image</object>
-              <object type="image/svg+xml" className="pf4-c-image__phone" aria-label="phone image"></object>
-              <object type="image/svg+xml" className="pf4-c-image__screen" aria-label="screen image"></object>
-              <object type="image/svg+xml" className="pf4-c-image__desktop" aria-label="desktop image"></object>
+              <div type="image/svg+xml" className="pf4-c-image__laptop" aria-label="laptop image"></div>
+              <div type="image/svg+xml" className="pf4-c-image__phone" aria-label="phone image"></div>
+              <div type="image/svg+xml" className="pf4-c-image__screen" aria-label="screen image"></div>
+              <div type="image/svg+xml" className="pf4-c-image__desktop" aria-label="desktop image"></div>
             </GridItem>
           </Grid>
         </GridItem>
@@ -98,11 +98,11 @@ const IndexPage = () => (
                 <Text component={TextVariants.h2}>Built for teams, built to scale</Text>
                 <Text component={TextVariants.p} className="pf-u-mb-3xl">Unify design and development with a set of clear guidelines and tools to help streamline communication and build more consistent user experiences.</Text>
                 <div className="pf-u-pb-md">
-                  <Text component={TextVariants.a} href="/get-started/developers" className="pf-m-white pf4-c-link__text" aria-label="Get started for developer">Get started for developers <ArrowRightIcon />
+                  <Text component={TextVariants.a} href={withPrefix('/get-started/developers')} className="pf-m-white pf4-c-link__text" aria-label="Get started for developer">Get started for developers <ArrowRightIcon />
                   </Text>
                 </div>
                 <div className="pf-u-pb-md">
-                  <Text component={TextVariants.a} href="/get-started/designers" className="pf-m-white pf4-c-link__text" aria-label="Get started for designers">Get started for designers <ArrowRightIcon />
+                  <Text component={TextVariants.a} href={withPrefix('/get-started/designers')} className="pf-m-white pf4-c-link__text" aria-label="Get started for designers">Get started for designers <ArrowRightIcon />
                   </Text>
                 </div>
               </TextContent>

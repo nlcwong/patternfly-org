@@ -62,19 +62,21 @@ export default function ContentTemplate ({
   data // this prop will be injected by the GraphQL query below.
 }) {
   let SideNav;
-  const { mdx, allGetStartedNavigationJson, allDesignGuidelinesNavigationJson } = data;
+  const { mdx, allGetStartedNavigationJson, allDesignGuidelinesNavigationJson, allContributeNavigationJson } = data;
   const { frontmatter } = mdx;
 
   if (frontmatter.path.indexOf('/get-started') > -1 ) {
     SideNav = navBuilder(allGetStartedNavigationJson.edges);
   } else if (frontmatter.path.indexOf('/design-guidelines') > -1 ) {
     SideNav = navBuilder(allDesignGuidelinesNavigationJson.edges);
+  } else if (frontmatter.path.indexOf('/contribute') > -1 ) {
+    SideNav = navBuilder(allContributeNavigationJson.edges);
   }
 
   return (
     <Layout sideNav={SideNav}>
       <SEO title="Docs" keywords={['gatsby', 'application', 'react']} />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection className="pageSectionStyles markdown-body" variant={PageSectionVariants.light}>
         <PatternFlyThemeProvider>
           <TextContent>
             <MDXRenderer>
@@ -114,6 +116,14 @@ export const pageQuery = graphql`
             text
             path
           }
+        }
+      }
+    }
+    allContributeNavigationJson {
+      edges {
+        node {
+          text
+          path
         }
       }
     }
